@@ -4,7 +4,7 @@ A complete heads-up Texas Hold’em poker simulator written in Java, featuring a
 
 ## Motivation
 
-Built this project to see how far I could push my self-taught programming skills while building something meaningful. Coming from a competitive chess background, I was especially interested in modeling heuristic decision-making and probability under uncertainty through the AI bot and equity calculator.
+Built this project to see how far I could push my self-taught programming skills while building something meaningful. Coming from a competitive chess background, I was especially interested in modeling logic-based decision-making under uncertainty, and I attempted to achieve this through the AI bot and equity calculator.
 
 ## Features
 
@@ -58,7 +58,7 @@ How much do you want to raise? (You can raise up to $51)
 
 Opponent Calls
 
-...
+[ ... ]
 
 @@@@@@@@@@@@@@@@
     SHOWDOWN
@@ -123,7 +123,7 @@ These results match commercial poker software (PokerStove, Equilab) within stati
 1. Clone this repository
 2. Compile: `javac poker/Poker.java`
 3. Run: `java poker.Poker`
-4. Choose option 1 for game mode, or option 2 for Monte Carlo simulations
+4. Choose option 1 for Heads-Up Poker Game, or option 2 for Monte Carlo Simulations
 
 ## Technical Implementation
 
@@ -140,7 +140,7 @@ These results match commercial poker software (PokerStove, Equilab) within stati
 **Monte Carlo Simulation**:
 - Runs N simulations with random community cards
 - Calculates win probability, loss probability, and chop probability
-- Can test specific hand matchups (e.g., A-A vs K-K)
+- Can test specific hand matchups (e.g., A-A vs K-K), as well as any possible scenario in a heads-up poker game
 
 ## Future Improvements
 
@@ -153,7 +153,7 @@ If I were to continue this project, I would:
 ## Project Stats
 
 - **Lines of Code**: ~2,800
-- **Development Time**: 2 months
+- **Development Time**: 6 months
 - **Language**: Java
 
 ---
