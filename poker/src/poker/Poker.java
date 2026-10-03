@@ -457,6 +457,7 @@ public class Poker {
         *NOTE* If you want to manually set a card, you must do so outside the for loop and then remove the card from
         the deck manually via cards.remove(), as seen below for removing str1-str4 from the deck. This way, when you
         go to randomly generate the other cards, they cannot be duplicates of the card you manually chose.
+        */
         
         str1 = "A hearts";
         str2 = "A diamonds";
@@ -467,21 +468,16 @@ public class Poker {
         cards.remove(str2);
         cards.remove(str3);
         cards.remove(str4);
-        */
         
         ArrayList<String> simulationDeck = new ArrayList<>(cards);
         
-        int trials = 10000;
+        int trials = 100000;
         
         for(int i = 0; i < trials; i++) {
             resetHandVariables();
             cards = new ArrayList<>(simulationDeck);
             deckReset = 0;
             
-            str1 = deal();
-            str2 = deal(); 
-            str3 = deal(); 
-            str4 = deal(); 
             str5 = deal(); 
             str6 = deal();
             str7 = deal();
@@ -491,11 +487,9 @@ public class Poker {
             Showdown(str1, str2, str3, str4, str5, str6, str7, str8, str9, PlayerBetTotal, OpponentBetTotal);
         }
         //displaying data
-        /*Use these commands when setting the players' hole cards manually.
         System.out.println("\nPlayer Hand: " + str1 + ", " + str2);
         System.out.println("Opponent Hand: " + str3 + ", " + str4);
         System.out.println("Trials: " + trials);
-        */
         System.out.println("\nPlayer Wins: " + PlayerWins);
         System.out.println("Opponent Wins: " + OpponentWins);
         System.out.println("Chops: " + Chops);
@@ -815,6 +809,9 @@ public class Poker {
             return true;
         }
         else if(Straight(three, four, five, six, seven)) {
+            return true;
+        }
+        else if(Straight(two, three, four, five, seven)) {
             return true;
         }
         else {
@@ -2805,6 +2802,6 @@ public class Poker {
         }
     }
 
+    //END OF PROGRAM//
+    
 }
-
-//END OF PROGRAM//
