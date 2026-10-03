@@ -4,12 +4,12 @@ A complete heads-up Texas Hold’em poker simulator written in Java, featuring a
 
 ## Motivation
 
-Built this project to see how far I could push my self-taught programming skills while building something meaningful. Coming from a competitive chess background, I was especially interested in modeling logic-based decision-making under uncertainty, and I attempted to achieve this through the AI bot and equity calculator.
+This was my first independent programming project, built without any formal CS coursework. I wanted to see how far I could push my self-taught programming skills while building something meaningful. Coming from a competitive chess background, I was especially interested in modeling logic-based decision-making under uncertainty, and I attempted to achieve this through the AI bot and equity calculator.
 
 ## Features
 
 - **Full Poker Game**: Play heads-up poker against an AI opponent with complete betting rounds (pre-flop, flop, turn, river)
-- **Intelligent AI**: Computer opponent makes decisions based on hand strength evaluation
+- **Basic AI**: Computer opponent makes decisions based on hand strength evaluation
 - **Monte Carlo Simulator**: Calculate hand equity by running thousands of simulations
 - **Complete Hand Evaluation**: Accurately determines all poker hands from high card to royal flush, including proper kicker comparisons
 
@@ -73,8 +73,9 @@ You lose to your opponent's Two Pair.
 You lost $90.
 Your stack is now $10.
 Opponent's stack is now $190.
-```
 
+```
+**Note: Outputs have been reformatted for readability; actual console output uses plain text suit names.
 ---
 
 ### 2. Monte Carlo Simulator:
