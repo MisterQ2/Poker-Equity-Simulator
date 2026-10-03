@@ -1,10 +1,9 @@
 /*
- * PokerSimulator
+ * Poker-Equity-Simulator
  *
  * Implements a simplified Texas Hold’em poker engine with
  * basic AI decision-making and Monte Carlo-style hand evaluation.
  *
- * Focuses on correctness, clarity, and extensibility rather than UI.
  */
 
 package poker;
