@@ -83,32 +83,32 @@ Opponent's stack is now $190.
 ```text
 Player Hand: A ♥, A ♦
 Opponent Hand: K ♣, K ♠
-Trials: 10000
+Trials: 1000000
 
-Player Wins: 8164
-Opponent Wins: 1798
-Chops: 38
+Player Wins: 810773.0
+Opponent Wins: 185986.0
+Chops: 3241.0
 
-Player Equity: 81.83%
-Opponent Equity: 18.17%
+Player Equity: 81.24%
+Opponent Equity: 18.76%
 ```
 
 ---
 ## Accuracy Validation
 To verify the Monte Carlo simulator's correctness, I tested it against well-known poker equity calculations:
 
-|      Scenario      |   Expected Result   | Simulator Result (100K trials) |    Status    |
+|      Scenario      |   Expected Result   | Simulator Result (1M trials) |    Status    |
 |--------------------|---------------------|--------------------------------|--------------|
-| A-A vs K-K         |  81.25% vs. 18.74%  |        81.42% vs 18.59%        | ✅ Verified |
-| J-J vs A-K offsuit |  57.26% vs. 42.74%  |        57.36% vs 42.64%        | ✅ Verified |
-| J-J vs A-K suited  |  53.87% vs. 46.13%  |        53.69% vs 46.31%        | ✅ Verified |
-| 2-2 vs A-K suited  |  49.92% vs. 50.08%  |        49.75% vs 50.25%        | ✅ Verified |
+| A-A vs K-K         |  81.25% vs. 18.75%  |        81.24% vs 18.76%        | ✅ Verified |
+| J-J vs A-K offsuit |  57.26% vs. 42.74%  |        57.30% vs 42.70%        | ✅ Verified |
+| J-J vs A-K suited  |  53.87% vs. 46.13%  |        53.88% vs 46.12%        | ✅ Verified |
+| 2-2 vs A-K suited  |  49.92% vs. 50.08%  |        49.91% vs 50.09%        | ✅ Verified |
 
-These results match commercial poker software (CardPlayer, PokerNews) within statistical margin of error (±0.20% for 100,000 trials), confirming the hand evaluation algorithm correctly handles all poker hands including edge cases like wheel straights (A-2-3-4-5).
+These results match commercial poker software (CardPlayer, PokerNews) within statistical margin of error (±0.05% for 1,000,000 trials), confirming the hand evaluation algorithm correctly handles all poker hands including edge cases like wheel straights (A-2-3-4-5).
 
 **Validation Process:**
 1. Manually configured hole cards in the Monte Carlo section
-2. Ran 100,000 simulations for each scenario
+2. Ran 1,000,000 simulations for each scenario
 3. Compared results against established poker theory and commercial tools
 4. All results accurate within expected variance
 
@@ -146,14 +146,13 @@ These results match commercial poker software (CardPlayer, PokerNews) within sta
 ## Future Improvements
 
 If I were to continue this project, I would:
-- Refactor to use object-oriented design (Card, Hand, Player classes)
-- Add post-flop hand strength evaluation for smarter AI
-- Implement confidence intervals for Monte Carlo results
-- Add expected value (EV) calculations for decision-making
+- Refactor to use object-oriented design (Card, Hand, Player classes) and more proper coding etiquette
+- Further optimize hand-classification aglorithms
+- Add more sophisticated expected value (EV) calculations for AI decision-making
 
 ## Project Stats
 
-- **Lines of Code**: ~2,800
+- **Lines of Code**: ~2,700
 - **Development Time**: 6 months
 - **Language**: Java
 
