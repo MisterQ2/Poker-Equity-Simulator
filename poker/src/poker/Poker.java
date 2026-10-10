@@ -1,9 +1,10 @@
 /*
- * Poker-Equity-Simulator
+ * PokerSimulator
  *
  * Implements a simplified Texas Hold’em poker engine with
  * basic AI decision-making and Monte Carlo-style hand evaluation.
  *
+ * Focuses on correctness, clarity, and extensibility rather than UI.
  */
 
 package poker;
@@ -72,17 +73,20 @@ public class Poker {
     static int OpponentFullHouseHigh2 = 0;
     static boolean PlayerFlush = false;
     static int PlayerFlushHigh = 0;
-    static int PlayerFlushHighHeart;
-    static int PlayerFlushHighDiamond;
-    static int PlayerFlushHighSpade;
-    static int PlayerFlushHighClub;
+    static ArrayList<Integer> PlayerFlushHearts = new ArrayList<>();
+    static ArrayList<Integer> PlayerFlushDiamonds = new ArrayList<>();
+    static ArrayList<Integer> PlayerFlushSpades = new ArrayList<>();
+    static ArrayList<Integer> PlayerFlushClubs = new ArrayList<>();
     static boolean OpponentFlush = false;
     static int OpponentFlushHigh;
-    static int OpponentFlushHighHeart;
-    static int OpponentFlushHighDiamond;
-    static int OpponentFlushHighSpade;
-    static int OpponentFlushHighClub;
-    static int FlushHigh;
+    static ArrayList<Integer> OpponentFlushHearts = new ArrayList<>();
+    static ArrayList<Integer> OpponentFlushDiamonds = new ArrayList<>();
+    static ArrayList<Integer> OpponentFlushSpades = new ArrayList<>();
+    static ArrayList<Integer> OpponentFlushClubs = new ArrayList<>();
+    static boolean isHeartFlush = false;
+    static boolean isDiamondFlush = false;
+    static boolean isSpadeFlush = false;
+    static boolean isClubFlush = false;
     static boolean PlayerStraight = false;
     static int PlayerStraightHigh = 0;
     static boolean OpponentStraight = false;
@@ -100,8 +104,10 @@ public class Poker {
     static int OpponentTwoPairSecondHigh = 0;
     static boolean PlayerOnePair = false;
     static int PlayerOnePairHigh = 0;
+    static int PlayerOnePairSecondHigh = 0;
     static boolean OpponentOnePair = false;
     static int OpponentOnePairHigh = 0;
+    static int OpponentOnePairSecondHigh = 0;
     static boolean PlayerHighCard = false;
     static int PlayerHighCardValue = 0;
     static boolean OpponentHighCard = false;
@@ -460,8 +466,8 @@ public class Poker {
         
         str1 = "A hearts";
         str2 = "A diamonds";
-        str3 = "K clubs";
-        str4 = "K spades";
+        str3 = "K spades";
+        str4 = "K clubs";
         
         cards.remove(str1);
         cards.remove(str2);
@@ -470,7 +476,7 @@ public class Poker {
         
         ArrayList<String> simulationDeck = new ArrayList<>(cards);
         
-        int trials = 100000;
+        int trials = 1000000;
         
         for(int i = 0; i < trials; i++) {
             resetHandVariables();
@@ -531,162 +537,69 @@ public class Poker {
     
     //method inspects the contents of a card's String value and returns its suit, to be used by other methods
     static String SuitChecker(String str) {
-        String j = "J";
-        String q = "Q";
-        String k = "K";
-        String a = "A";
-        
         if(!str.replace(" hearts", "").equals(str)) {
-            String str1change = str.replace("hearts", "").trim();
-            try{
-            FlushHigh = Integer.parseInt(str1change);
-            }
-            catch(NumberFormatException e) {
-                if(str1change.equals(j)) {
-                    FlushHigh = 11;
-                }
-                else if(str1change.equals(q)) {
-                    FlushHigh = 12;
-                }
-                else if(str1change.equals(k)) {
-                    FlushHigh = 13;
-                }
-                else if(str1change.equals(a)) {
-                    FlushHigh = 14;
-                }
-            }
             return "H";
         }
         else if(!str.replace(" diamonds", "").equals(str)) {
-            String str2change = str.replace("diamonds", "").trim();
-            try{
-            FlushHigh = Integer.parseInt(str2change);
-            }
-            catch(NumberFormatException e) {
-                if(str2change.equals(j)) {
-                    FlushHigh = 11;
-                }
-                else if(str2change.equals(q)) {
-                    FlushHigh = 12;
-                }
-                else if(str2change.equals(k)) {
-                    FlushHigh = 13;
-                }
-                else if(str2change.equals(a)) {
-                    FlushHigh = 14;
-                }
-            }
             return "D";
         }
         else if(!str.replace(" spades", "").equals(str)) {
-            String str3change = str.replace("spades", "").trim();
-            try{
-            FlushHigh = Integer.parseInt(str3change);
-            }
-            catch(NumberFormatException e) {
-                if(str3change.equals(j)) {
-                    FlushHigh = 11;
-                }
-                else if(str3change.equals(q)) {
-                    FlushHigh = 12;
-                }
-                else if(str3change.equals(k)) {
-                    FlushHigh = 13;
-                }
-                else if(str3change.equals(a)) {
-                    FlushHigh = 14;
-                }
-            }
             return "S";
         }
         else {
-            String str4change = str.replace("clubs", "").trim();
-            try{
-            FlushHigh = Integer.parseInt(str4change);
-            }
-            catch(NumberFormatException e) {
-                if(str4change.equals(j)) {
-                    FlushHigh = 11;
-                }
-                else if(str4change.equals(q)) {
-                    FlushHigh = 12;
-                }
-                else if(str4change.equals(k)) {
-                    FlushHigh = 13;
-                }
-                else if(str4change.equals(a)) {
-                    FlushHigh = 14;
-                }
-            }
             return "C";
         }
-        
     }
     
     //method scans the user's cards (user's hole cards and community cards) and determines how many cards of each suit there are
     //and what the value of the highest-value card of each suit is
-    static void PlayersuitCounter (String str) {
+    static void PlayersuitCounter (String suit, String str) {
         String h = "H";
         String d = "D";
         String s = "S";
         String c = "C";
-        if(str.equals(h)) {
-                PlayerHearts++;
-                if(FlushHigh > PlayerFlushHighHeart) {
-                    PlayerFlushHighHeart = FlushHigh;
-                }
-            }
-            else if(str.equals(d)) {
-                PlayerDiamonds++;
-                if(FlushHigh > PlayerFlushHighDiamond) {
-                    PlayerFlushHighDiamond = FlushHigh;
-                }
-            }
-            else if(str.equals(s)) {
-                PlayerSpades++;
-                if(FlushHigh > PlayerFlushHighSpade) {
-                    PlayerFlushHighSpade = FlushHigh;
-                }
-            }
-            else if(str.equals(c)) {
-                PlayerClubs++;
-                if(FlushHigh > PlayerFlushHighClub) {
-                    PlayerFlushHighClub = FlushHigh;
-                }
-            }
+        
+        if(suit.equals(h)) {
+            PlayerHearts++;
+            PlayerFlushHearts.add(NumConverter(str));
+        }
+        else if(suit.equals(d)) {
+            PlayerDiamonds++;
+            PlayerFlushDiamonds.add(NumConverter(str));
+        }
+        else if(suit.equals(s)) {
+            PlayerSpades++;
+            PlayerFlushSpades.add(NumConverter(str));
+        }
+        else if(suit.equals(c)) {
+            PlayerClubs++;
+            PlayerFlushClubs.add(NumConverter(str));
+        }
     }
     
     //does the same as the previous method, but for the computer's cards
-    static void OpponentsuitCounter (String str) {
+    static void OpponentsuitCounter (String suit, String str) {
         String h = "H";
         String d = "D";
         String s = "S";
         String c = "C";
             
-        if(str.equals(h)) {
-                OpponentHearts++;
-                if(FlushHigh > OpponentFlushHighHeart) {
-                    OpponentFlushHighHeart = FlushHigh;
-                }
-            }
-            else if(str.equals(d)) {
-                OpponentDiamonds++;
-                if(FlushHigh > OpponentFlushHighDiamond) {
-                    OpponentFlushHighDiamond = FlushHigh;
-                }
-            }
-            else if(str.equals(s)) {
-                OpponentSpades++;
-                if(FlushHigh > OpponentFlushHighSpade) {
-                    OpponentFlushHighSpade = FlushHigh;
-                }
-            }
-            else if(str.equals(c)) {
-                OpponentClubs++;
-                if(FlushHigh > OpponentFlushHighClub) {
-                    OpponentFlushHighClub = FlushHigh;
-                }
-            }
+        if(suit.equals(h)) {
+            OpponentHearts++;
+            OpponentFlushHearts.add(NumConverter(str));
+        }
+        else if(suit.equals(d)) {
+            OpponentDiamonds++;
+            OpponentFlushDiamonds.add(NumConverter(str));
+        }
+        else if(suit.equals(s)) {
+            OpponentSpades++;
+            OpponentFlushSpades.add(NumConverter(str));
+        }
+        else if(suit.equals(c)) {
+            OpponentClubs++;
+            OpponentFlushClubs.add(NumConverter(str));
+        }
     }
     
     //converts card into its numeric value to be used by other methods
@@ -699,7 +612,7 @@ public class Poker {
         String q = "Q";
         String k = "K";
         String a = "A";
-        int num = 0;
+        int num;
         
         try {
             num = Integer.parseInt(str);
@@ -750,383 +663,237 @@ public class Poker {
     
     //logic for Straight method
     static boolean StraightChecker(int one, int two, int three, int four, int five, int six, int seven) {
-        if(Straight(one, two, three, four, five)) {
+        // Sort the input values to make it easier to check for straights
+        int[] nums = {one, two, three, four, five, six, seven};
+        Arrays.sort(nums);
+        if(nums[6] == 14 && nums[5] != 13) {
+            nums[6] = 1;
+            Arrays.sort(nums);
+        }
+        else if(nums[6] == 14 && nums[5] == 13 && Straight(nums[3],nums[2],nums[1],nums[0],1)) {
+            nums[6] = 1;
+            Arrays.sort(nums);
+        }
+        
+        // Check for the highest possible straights first (Ace-high down to 5-high)
+        if (Straight(nums[6], nums[5], nums[4], nums[3], nums[2])) {  // Highest 5 cards (e.g., 10-J-Q-K-A)
             return true;
         }
-        else if(Straight(one, two, three, four, six)) {
+        else if (Straight(nums[6], nums[5], nums[4], nums[3], nums[1])) {  // Skip the 2nd lowest card
             return true;
         }
-        else if(Straight(one, two, three, four, seven)) {
+        else if (Straight(nums[6], nums[5], nums[4], nums[3], nums[0])) {  // Skip the lowest card
             return true;
         }
-        else if(Straight(one, two, three, five, six)) {
+        else if (Straight(nums[6], nums[5], nums[4], nums[2], nums[1])) {  // Skip the 3rd lowest card
             return true;
         }
-        else if(Straight(one, two, three, five, seven)) {
+        else if (Straight(nums[6], nums[5], nums[4], nums[2], nums[0])) {  // Skip the 2nd and 3rd lowest
             return true;
         }
-        else if(Straight(one, two, three, six, seven)) {
+        else if (Straight(nums[6], nums[5], nums[4], nums[1], nums[0])) {  // Skip the 2nd and 4th lowest
             return true;
         }
-        else if(Straight(one, two, four, five, six)) {
+        else if (Straight(nums[6], nums[5], nums[3], nums[2], nums[1])) {  // Skip the 3rd highest card
             return true;
         }
-        else if(Straight(one, two, four, five, seven)) {
+        else if (Straight(nums[6], nums[5], nums[3], nums[2], nums[0])) {  // Skip the 3rd highest and lowest
             return true;
         }
-        else if(Straight(one, two, four, six, seven)) {
+        else if (Straight(nums[6], nums[5], nums[3], nums[1], nums[0])) {  // Skip the 3rd highest and 2nd lowest
             return true;
         }
-        else if(Straight(one, two, five, six, seven)) {
+        else if (Straight(nums[6], nums[5], nums[2], nums[1], nums[0])) {  // Skip the 3rd and 4th highest
             return true;
         }
-        else if(Straight(one, three, four, five, six)) {
+        else if (Straight(nums[6], nums[4], nums[3], nums[2], nums[1])) {  // Skip the 2nd highest card
             return true;
         }
-        else if(Straight(one, three, four, five, seven)) {
+        else if (Straight(nums[6], nums[4], nums[3], nums[2], nums[0])) {  // Skip the 2nd highest and lowest
             return true;
         }
-        else if(Straight(one, three, four, six, seven)) {
+        else if (Straight(nums[6], nums[4], nums[3], nums[1], nums[0])) {  // Skip the 2nd highest and 2nd lowest
             return true;
         }
-        else if(Straight(one, three, five, six, seven)) {
+        else if (Straight(nums[6], nums[4], nums[2], nums[1], nums[0])) {  // Skip the 2nd highest and 3rd lowest
             return true;
         }
-        else if(Straight(one, four, five, six, seven)) {
+        else if (Straight(nums[6], nums[3], nums[2], nums[1], nums[0])) {  // Skip the 2nd and 3rd highest
             return true;
         }
-        else if(Straight(two, three, four, five, six)) {
+        else if (Straight(nums[5], nums[4], nums[3], nums[2], nums[1])) {  // Skip the highest card
             return true;
         }
-        else if(Straight(two, three, four, six, seven)) {
+        else if (Straight(nums[5], nums[4], nums[3], nums[2], nums[0])) {  // Skip the highest and lowest
             return true;
         }
-        else if(Straight(two, three, five, six, seven)) {
+        else if (Straight(nums[5], nums[4], nums[3], nums[1], nums[0])) {  // Skip the highest and 2nd lowest
             return true;
         }
-        else if(Straight(two, four, five, six, seven)) {
+        else if (Straight(nums[5], nums[4], nums[2], nums[1], nums[0])) {  // Skip the highest and 3rd lowest
             return true;
         }
-        else if(Straight(three, four, five, six, seven)) {
+        else if (Straight(nums[5], nums[3], nums[2], nums[1], nums[0])) {  // Skip the highest and 3rd highest
             return true;
         }
-        else if(Straight(two, three, four, five, seven)) {
+        else if (Straight(nums[4], nums[3], nums[2], nums[1], nums[0])) {  // Skip the 2 highest cards
             return true;
         }
         else {
             return false;
-        }
-    }
-    
-    //another suit checker method, used for the player and computer Straight Flush checker logic
-    static String SuitChecker2(String str) {
-        if(!str.replace(" hearts", "").equals(str)) {
-            return "heart";
-        }
-        else if(!str.replace(" diamonds", "").equals(str)) {
-            return "diamond";
-        }
-        else if(!str.replace(" spades", "").equals(str)) {
-            return "spade";
-        }
-        else if(!str.replace(" clubs", "").equals(str)) {
-            return "club";
-        }
-        else {
-            return "";
         }
     }
     
     //checks if the player has a straight flush
     static boolean PlayerStraightFlush(String str1, String str2, String str3, String str4, String str5, String str6, String str7) {
         if(PlayerStraight && PlayerFlush) {
-            int[] nums = {NumConverter(str1), NumConverter(str2), NumConverter(str3), NumConverter(str4), NumConverter(str5), NumConverter(str6), NumConverter(str7)};
-            Arrays.sort(nums);
-            String[] strings = new String[nums.length];
-            for(int i = 0; i < strings.length; i++) {
-                strings[i] = String.valueOf(nums[i]);
-            }
-            for(int i = 0; i < nums.length; i++) {
-                if(nums[i] == NumConverter(str1)) {
-                    strings[i] = SuitChecker2(str1);
-                }
-                else if(nums[i] == NumConverter(str2)) {
-                    strings[i] = SuitChecker2(str2);
-                }
-                else if(nums[i] == NumConverter(str3)) {
-                    strings[i] = SuitChecker2(str3);
-                }
-                else if(nums[i] == NumConverter(str4)) {
-                    strings[i] = SuitChecker2(str4);
-                }
-                else if(nums[i] == NumConverter(str5)) {
-                    strings[i] = SuitChecker2(str5);
-                }
-                else if(nums[i] == NumConverter(str6)) {
-                    strings[i] = SuitChecker2(str6);
-                }
-                else if(nums[i] == NumConverter(str7)) {
-                    strings[i] = SuitChecker2(str7);
-                }
-            }
-            
-            String String7 = strings[6];
-            String String6 = strings[5];
-            String String5 = strings[4];
-            String String4 = strings[3];
-            String String3 = strings[2];
-            String String2 = strings[1];
-            String String1 = strings[0];
-            if(nums[6] == PlayerStraightHigh) {
-                if(PlayerHearts >= 5) {
-                    if(String7.equals("heart") && String6.equals("heart") && String5.equals("heart") && String4.equals("heart") && String3.equals("heart")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerDiamonds >= 5) {
-                    if(String7.equals("diamond") && String6.equals("diamond") && String5.equals("diamond") && String4.equals("diamond") && String3.equals("diamond")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerSpades >= 5) {
-                    if(String7.equals("spade") && String6.equals("spade") && String5.equals("spade") && String4.equals("spade") && String3.equals("spade")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerClubs >= 5) {
-                    if(String7.equals("club") && String6.equals("club") && String5.equals("club") && String4.equals("club") && String3.equals("club")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            ArrayList<String> cards = new ArrayList<>();
+            cards.add(str1);
+            cards.add(str2);
+            cards.add(str3);
+            cards.add(str4);
+            cards.add(str5);
+            cards.add(str6);
+            cards.add(str7);
+            if(isHeartFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("H")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
             }
-            else if(nums[5] == PlayerStraightHigh) {
-                if(PlayerHearts >= 5) {
-                    if(String6.equals("heart") && String5.equals("heart") && String4.equals("heart") && String3.equals("heart") && String2.equals("heart")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerDiamonds >= 5) {
-                    if(String6.equals("diamond") && String5.equals("diamond") && String4.equals("diamond") && String3.equals("diamond") && String2.equals("diamond")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerSpades >= 5) {
-                    if(String6.equals("spade") && String5.equals("spade") && String4.equals("spade") && String3.equals("spade") && String2.equals("spade")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerClubs >= 5) {
-                    if(String6.equals("club") && String5.equals("club") && String4.equals("club") && String3.equals("club") && String2.equals("club")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            else if(isDiamondFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("D")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
             }
-            else if(nums[4] == PlayerStraightHigh) {
-                if(PlayerHearts >= 5) {
-                    if(String5.equals("heart") && String4.equals("heart") && String3.equals("heart") && String2.equals("heart") && String1.equals("heart")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            else if(isSpadeFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("S")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
-                if(PlayerDiamonds >= 5) {
-                    if(String5.equals("diamond") && String4.equals("diamond") && String3.equals("diamond") && String2.equals("diamond") && String1.equals("diamond")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(PlayerSpades >= 5) {
-                    if(String5.equals("spade") && String4.equals("spade") && String3.equals("spade") && String2.equals("spade") && String1.equals("spade")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            }
+            else if(isClubFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("C")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
-                if(PlayerClubs >= 5) {
-                    if(String5.equals("club") && String4.equals("club") && String3.equals("club") && String2.equals("club") && String1.equals("club")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+            }
+            int one = NumConverter(cards.get(0));
+            int two = NumConverter(cards.get(1));
+            int three = NumConverter(cards.get(2));
+            int four = NumConverter(cards.get(3));
+            int five = NumConverter(cards.get(4));
+            int six = NumConverter(cards.get(4));
+            int seven = NumConverter(cards.get(4));
+            if(cards.size() == 5) {
+                if(StraightChecker(one, two, three, four, five, six, seven)) {
+                    PlayerStraightFlushHigh = StraightHigh;
+                    return true;
+                }
+            }
+            if(cards.size() == 6) {
+                six = NumConverter(cards.get(5));
+                if(StraightChecker(one, two, three, four, five, six, seven)) {
+                    PlayerStraightFlushHigh = StraightHigh;
+                    return true;
+                }
+            }
+            if(cards.size() == 7) {
+                six = NumConverter(cards.get(5));
+                seven = NumConverter(cards.get(6));
+                if(StraightChecker(one, two, three, four, five, six, seven)) {
+                    PlayerStraightFlushHigh = StraightHigh;
+                    return true;
                 }
             }
         }
-            return false;
+            
+        return false;
     }
     
     //checks if the computer has a straight flush
     static boolean OpponentStraightFlush(String str1, String str2, String str3, String str4, String str5, String str6, String str7) {
         if(OpponentStraight && OpponentFlush) {
-            int[] nums = {NumConverter(str1), NumConverter(str2), NumConverter(str3), NumConverter(str4), NumConverter(str5), NumConverter(str6), NumConverter(str7)};
-            Arrays.sort(nums);
-            String[] strings = new String[nums.length];
-            for(int i = 0; i < strings.length; i++) {
-                strings[i] = String.valueOf(nums[i]);
-            }
-            for(int i = 0; i < nums.length; i++) {
-                if(nums[i] == NumConverter(str1)) {
-                    strings[i] = SuitChecker2(str1);
-                }
-                else if(nums[i] == NumConverter(str2)) {
-                    strings[i] = SuitChecker2(str2);
-                }
-                else if(nums[i] == NumConverter(str3)) {
-                    strings[i] = SuitChecker2(str3);
-                }
-                else if(nums[i] == NumConverter(str4)) {
-                    strings[i] = SuitChecker2(str4);
-                }
-                else if(nums[i] == NumConverter(str5)) {
-                    strings[i] = SuitChecker2(str5);
-                }
-                else if(nums[i] == NumConverter(str6)) {
-                    strings[i] = SuitChecker2(str6);
-                }
-                else if(nums[i] == NumConverter(str7)) {
-                    strings[i] = SuitChecker2(str7);
-                }
-            }
-            
-            String String7 = strings[6];
-            String String6 = strings[5];
-            String String5 = strings[4];
-            String String4 = strings[3];
-            String String3 = strings[2];
-            String String2 = strings[1];
-            String String1 = strings[0];
-            if(nums[6] == OpponentStraightHigh) {
-                if(OpponentHearts >= 5) {
-                    if(String7.equals("heart") && String6.equals("heart") && String5.equals("heart") && String4.equals("heart") && String3.equals("heart")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentDiamonds >= 5) {
-                    if(String7.equals("diamond") && String6.equals("diamond") && String5.equals("diamond") && String4.equals("diamond") && String3.equals("diamond")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentSpades >= 5) {
-                    if(String7.equals("spade") && String6.equals("spade") && String5.equals("spade") && String4.equals("spade") && String3.equals("spade")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentClubs >= 5) {
-                    if(String7.equals("club") && String6.equals("club") && String5.equals("club") && String4.equals("club") && String3.equals("club")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            ArrayList<String> cards = new ArrayList<>();
+            cards.add(str1);
+            cards.add(str2);
+            cards.add(str3);
+            cards.add(str4);
+            cards.add(str5);
+            cards.add(str6);
+            cards.add(str7);
+            if(isHeartFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("H")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
             }
-            else if(nums[5] == OpponentStraightHigh) {
-                if(OpponentHearts >= 5) {
-                    if(String6.equals("heart") && String5.equals("heart") && String4.equals("heart") && String3.equals("heart") && String2.equals("heart")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentDiamonds >= 5) {
-                    if(String6.equals("diamond") && String5.equals("diamond") && String4.equals("diamond") && String3.equals("diamond") && String2.equals("diamond")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentSpades >= 5) {
-                    if(String6.equals("spade") && String5.equals("spade") && String4.equals("spade") && String3.equals("spade") && String2.equals("spade")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentClubs >= 5) {
-                    if(String6.equals("club") && String5.equals("club") && String4.equals("club") && String3.equals("club") && String2.equals("club")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            else if(isDiamondFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("D")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
             }
-            else if(nums[4] == OpponentStraightHigh) {
-                if(OpponentHearts >= 5) {
-                    if(String5.equals("heart") && String4.equals("heart") && String3.equals("heart") && String2.equals("heart") && String1.equals("heart")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            else if(isSpadeFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("S")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
-                if(OpponentDiamonds >= 5) {
-                    if(String5.equals("diamond") && String4.equals("diamond") && String3.equals("diamond") && String2.equals("diamond") && String1.equals("diamond")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                if(OpponentSpades >= 5) {
-                    if(String5.equals("spade") && String4.equals("spade") && String3.equals("spade") && String2.equals("spade") && String1.equals("spade")) {
-                        return true;
-                    }
-                    else {
-                        return false;
+            }
+            else if(isClubFlush) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if(!SuitChecker(cards.get(i)).equals("C")) {
+                        cards.remove(i);
+                        i--;
                     }
                 }
-                if(OpponentClubs >= 5) {
-                    if(String5.equals("club") && String4.equals("club") && String3.equals("club") && String2.equals("club") && String1.equals("club")) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+            }
+            int one = NumConverter(cards.get(0));
+            int two = NumConverter(cards.get(1));
+            int three = NumConverter(cards.get(2));
+            int four = NumConverter(cards.get(3));
+            int five = NumConverter(cards.get(4));
+            int six = NumConverter(cards.get(4));
+            int seven = NumConverter(cards.get(4));
+            if(cards.size() == 5) {
+                if(StraightChecker(one, two, three, four, five, six, seven)) {
+                    OpponentStraightFlushHigh = StraightHigh;
+                    return true;
+                }
+            }
+            if(cards.size() == 6) {
+                six = NumConverter(cards.get(5));
+                if(StraightChecker(one, two, three, four, five, six, seven)) {
+                    OpponentStraightFlushHigh = StraightHigh;
+                    return true;
+                }
+            }
+            if(cards.size() == 7) {
+                six = NumConverter(cards.get(5));
+                seven = NumConverter(cards.get(6));
+                if(StraightChecker(one, two, three, four, five, six, seven)) {
+                    OpponentStraightFlushHigh = StraightHigh;
+                    return true;
                 }
             }
         }
-            return false;
+            
+        return false;
     }
     
     //checks if the player has a four of a kind
@@ -1191,20 +958,22 @@ public class Poker {
         int[] nums = {one1, two2, three3, four4, five5, six6, seven7};
         Arrays.sort(nums);
         int counter1 = 0;
-        int value = 0;
+        int value1 = 0;
         int value2 = 0;
         int counter2 = 0;
+        int value3 = 0;
+        int counter3 = 0;
         for(int i = 6; i > 0; i--) {
             if(nums[i] - nums[i - 1] == 0) {
                 if(i == 6) {
                     counter1++;
-                    value = nums[i];
+                    value1 = nums[i];
                 }
-                else if(nums[i] == value) {
+                else if(nums[i] == value1) {
                     counter1++;
                 }
-                else if(value == 0) {
-                    value = nums[i];
+                else if(value1 == 0) {
+                    value1 = nums[i];
                     counter1++;
                 }
                 else if(value2 == 0) {
@@ -1214,23 +983,31 @@ public class Poker {
                 else if(nums[i] == value2) {
                     counter2++;
                 }
-            }
-        }
-        if(counter1 == 2 || counter2 == 2) {
-            if(value > value2) {
-                PlayerThreeOfAKindHigh = value;
-                for(int j = 0; j < nums.length; j++) {
-                    if(nums[j] != PlayerThreeOfAKindHigh) {
-                        PlayerThreeOfAKindKickers.add(nums[j]);
-                    }
+                else if(value3 == 0) {
+                    value3 = nums[i];
+                    counter3++;
+                }
+                else if(nums[i] == value3) {
+                    counter3++;
+                }
+                if(counter1 == 2 || counter2 == 2 || counter3 == 2) {
+                    break;
                 }
             }
-            else {
+        }
+        if(counter1 == 2 || counter2 == 2 || counter3 == 2) {
+            if(counter1 == 2) {
+                PlayerThreeOfAKindHigh = value1;
+            }
+            else if(counter2 == 2) {
                 PlayerThreeOfAKindHigh = value2;
-                for(int j = 0; j < nums.length; j++) {
-                    if(nums[j] != PlayerThreeOfAKindHigh) {
-                        PlayerThreeOfAKindKickers.add(nums[j]);
-                    }
+            }
+            else if(counter3 == 2) {
+                PlayerThreeOfAKindHigh = value3;
+            }
+            for(int j = 0; j < nums.length; j++) {
+                if(nums[j] != PlayerThreeOfAKindHigh) {
+                    PlayerThreeOfAKindKickers.add(nums[j]);
                 }
             }
             return true;
@@ -1250,20 +1027,22 @@ public class Poker {
         int[] nums = {one1, two2, three3, four4, five5, six6, seven7};
         Arrays.sort(nums);
         int counter1 = 0;
-        int value = 0;
+        int value1 = 0;
         int value2 = 0;
         int counter2 = 0;
+        int value3 = 0;
+        int counter3 = 0;
         for(int i = 6; i > 0; i--) {
             if(nums[i] - nums[i - 1] == 0) {
                 if(i == 6) {
                     counter1++;
-                    value = nums[i];
+                    value1 = nums[i];
                 }
-                else if(nums[i] == value) {
+                else if(nums[i] == value1) {
                     counter1++;
                 }
-                else if(value == 0) {
-                    value = nums[i];
+                else if(value1 == 0) {
+                    value1 = nums[i];
                     counter1++;
                 }
                 else if(value2 == 0) {
@@ -1273,23 +1052,31 @@ public class Poker {
                 else if(nums[i] == value2) {
                     counter2++;
                 }
-            }
-        }
-        if(counter1 == 2 || counter2 == 2) {
-            if(value > value2) {
-                OpponentThreeOfAKindHigh = value;
-                for(int j = 0; j < nums.length; j++) {
-                    if(nums[j] != OpponentThreeOfAKindHigh) {
-                        OpponentThreeOfAKindKickers.add(nums[j]);
-                    }
+                else if(value3 == 0) {
+                    value3 = nums[i];
+                    counter3++;
+                }
+                else if(nums[i] == value3) {
+                    counter3++;
+                }
+                if(counter1 == 2 || counter2 == 2 || counter3 == 2) {
+                    break;
                 }
             }
-            else {
+        }
+        if(counter1 == 2 || counter2 == 2 || counter3 == 2) {
+            if(counter1 == 2) {
+                OpponentThreeOfAKindHigh = value1;
+            }
+            else if(counter2 == 2) {
                 OpponentThreeOfAKindHigh = value2;
-                for(int j = 0; j < nums.length; j++) {
-                    if(nums[j] != OpponentThreeOfAKindHigh) {
-                        OpponentThreeOfAKindKickers.add(nums[j]);
-                    }
+            }
+            else if(counter3 == 2) {
+                OpponentThreeOfAKindHigh = value3;
+            }
+            for(int j = 0; j < nums.length; j++) {
+                if(nums[j] != OpponentThreeOfAKindHigh) {
+                    OpponentThreeOfAKindKickers.add(nums[j]);
                 }
             }
             return true;
@@ -1308,30 +1095,25 @@ public class Poker {
         int seven7 = NumConverter(str7);
         int[] nums = {one1, two2, three3, four4, five5, six6, seven7};
         Arrays.sort(nums);
-        int counter1 = 0;
-        int value = 0;
-        int value2 = 0;
+        int counter = 0;
+        int kicker = 0;
+        int kicker2 = 0;
         for(int i = 6; i > 0; i--) {
             if(nums[i] - nums[i - 1] == 0) {
-                counter1++;
-                if(nums[i] > value) {
-                    if(value == 0) {
-                        value = nums[i];
-                    }
-                    else {
-                        value2 = value;
-                        value = nums[i];
-                    }
+                counter++;
+                if(nums[i] > kicker) {
+                    kicker2 = kicker;
+                    kicker = nums[i];
                 }
-                else {
-                    value2 = nums[i];
+                else if(nums[i] > kicker2) {
+                    kicker2 = nums[i];
                 }
-                if(counter1 == 2) break;
+                if(counter == 2) break;
             }
         }
-        if(counter1 == 2) {
-            PlayerTwoPairHigh = value;
-            PlayerTwoPairSecondHigh = value2;
+        if(counter == 2) {
+            PlayerTwoPairHigh = kicker;
+            PlayerTwoPairSecondHigh = kicker2;
             for(int j = 0; j < nums.length; j++) {
                 if(nums[j] != PlayerTwoPairHigh && nums[j] != PlayerTwoPairSecondHigh) {
                     PlayerTwoPairKickers.add(nums[j]);
@@ -1354,29 +1136,24 @@ public class Poker {
         int[] nums = {one1, two2, three3, four4, five5, six6, seven7};
         Arrays.sort(nums);
         int counter1 = 0;
-        int value = 0;
-        int value2 = 0;
+        int kicker = 0;
+        int kicker2 = 0;
         for(int i = 6; i > 0; i--) {
             if(nums[i] - nums[i - 1] == 0) {
                 counter1++;
-                if(nums[i] > value) {
-                    if(value == 0) {
-                        value = nums[i];
-                    }
-                    else {
-                        value2 = value;
-                        value = nums[i];
-                    }
+                if(nums[i] > kicker) {
+                    kicker2 = kicker;
+                    kicker = nums[i];
                 }
-                else {
-                    value2 = nums[i];
+                else if(nums[i] > kicker2) {
+                    kicker2 = nums[i];
                 }
                 if(counter1 == 2) break;
             }
         }
         if(counter1 == 2) {
-            OpponentTwoPairHigh = value;
-            OpponentTwoPairSecondHigh = value2;
+            OpponentTwoPairHigh = kicker;
+            OpponentTwoPairSecondHigh = kicker2;
             for(int j = 0; j < nums.length; j++) {
                 if(nums[j] != OpponentTwoPairHigh && nums[j] != OpponentTwoPairSecondHigh) {
                     OpponentTwoPairKickers.add(nums[j]);
@@ -1399,19 +1176,31 @@ public class Poker {
         int[] nums = {one1, two2, three3, four4, five5, six6, seven7};
         Arrays.sort(nums);
         int counter1 = 0;
-        int value = 0;
+        int value1 = 0;
+        int counter2 = 0;
+        int value2 = 0;
         for(int i = 6; i > 0; i--) {
             if(nums[i] - nums[i - 1] == 0) {
-                counter1++;
-                if(nums[i] > value && nums[i] != PlayerThreeOfAKindHigh) {
-                    value = nums[i];
+                if(value1 == 0) {
+                    counter1++;
+                    value1 = nums[i];
+                }
+                else if(value2 == 0 && nums[i] != value1) {
+                    counter2++;
+                    value2 = nums[i];
+                }
+                if(counter2 == 1) {
+                    break;
                 }
             }
         }
-        if(counter1 >= 1) {
-            PlayerOnePairHigh = value;
+        if(counter1 == 1) {
+            PlayerOnePairHigh = value1;
+            if(counter2 == 1) {
+                PlayerOnePairSecondHigh = value2;
+            }
             for(int j = 0; j < nums.length; j++) {
-                if(nums[j] != PlayerOnePairHigh) {
+                if(nums[j] != PlayerOnePairHigh && nums[j] != PlayerOnePairSecondHigh) {
                     PlayerOnePairKickers.add(nums[j]);
                 }
             }
@@ -1432,19 +1221,31 @@ public class Poker {
         int[] nums = {one1, two2, three3, four4, five5, six6, seven7};
         Arrays.sort(nums);
         int counter1 = 0;
-        int value = 0;
+        int value1 = 0;
+        int counter2 = 0;
+        int value2 = 0;
         for(int i = 6; i > 0; i--) {
             if(nums[i] - nums[i - 1] == 0) {
-                counter1++;
-                if(nums[i] > value && nums[i] != OpponentThreeOfAKindHigh) {
-                    value = nums[i];
+                if(value1 == 0) {
+                    counter1++;
+                    value1 = nums[i];
+                }
+                else if(value2 == 0 && nums[i] != value1) {
+                    counter2++;
+                    value2 = nums[i];
+                }
+                if(counter2 == 1) {
+                    break;
                 }
             }
         }
-        if(counter1 >= 1) {
-            OpponentOnePairHigh = value;
+        if(counter1 == 1) {
+            OpponentOnePairHigh = value1;
+            if(counter2 == 1) {
+                OpponentOnePairSecondHigh = value2;
+            }
             for(int j = 0; j < nums.length; j++) {
-                if(nums[j] != OpponentOnePairHigh) {
+                if(nums[j] != OpponentOnePairHigh && nums[j] != OpponentOnePairSecondHigh) {
                     OpponentOnePairKickers.add(nums[j]);
                 }
             }
@@ -1456,8 +1257,19 @@ public class Poker {
     //checks if the player has a full house
     static boolean PlayerFullHouse(String str1, String str2, String str3, String str4, String str5, String str6, String str7) {
         if(PlayerOnePairHigh > 0 && PlayerThreeOfAKindHigh > 0) {
-            PlayerFullHouseHigh1 = PlayerThreeOfAKindHigh;
-            PlayerFullHouseHigh2 = PlayerOnePairHigh;
+            if(PlayerOnePairHigh == PlayerThreeOfAKindHigh) {
+                if(PlayerOnePairSecondHigh == 0) {
+                    return false;
+                }
+                else {
+                    PlayerFullHouseHigh1 = PlayerThreeOfAKindHigh;
+                    PlayerFullHouseHigh2 = PlayerOnePairSecondHigh;
+                }
+            }
+            else {
+                PlayerFullHouseHigh1 = PlayerThreeOfAKindHigh;
+                PlayerFullHouseHigh2 = PlayerOnePairHigh;
+            }
             return true;
         }
         return false;
@@ -1466,8 +1278,19 @@ public class Poker {
     //checks if the computer has a full house
     static boolean OpponentFullHouse(String str1, String str2, String str3, String str4, String str5, String str6, String str7) {
         if(OpponentOnePairHigh > 0 && OpponentThreeOfAKindHigh > 0) {
-            OpponentFullHouseHigh1 = OpponentThreeOfAKindHigh;
-            OpponentFullHouseHigh2 = OpponentOnePairHigh;
+            if(OpponentOnePairHigh == OpponentThreeOfAKindHigh) {
+                if(OpponentOnePairSecondHigh == 0) {
+                    return false;
+                }
+                else {
+                    OpponentFullHouseHigh1 = OpponentThreeOfAKindHigh;
+                    OpponentFullHouseHigh2 = OpponentOnePairSecondHigh;
+                }
+            }
+            else {
+                OpponentFullHouseHigh1 = OpponentThreeOfAKindHigh;
+                OpponentFullHouseHigh2 = OpponentOnePairHigh;
+            }
             return true;
         }
         return false;
@@ -1520,44 +1343,44 @@ public class Poker {
 
 
         String str1Suit = SuitChecker(str1);
-        PlayersuitCounter(str1Suit);
+        PlayersuitCounter(str1Suit, str1);
         one = NumConverter(str1);
 
         String str2Suit = SuitChecker(str2);
-        PlayersuitCounter(str2Suit);
+        PlayersuitCounter(str2Suit, str2);
         two = NumConverter(str2);
 
         String str3Suit = SuitChecker(str3);
-        OpponentsuitCounter(str3Suit);
+        OpponentsuitCounter(str3Suit, str3);
         three = NumConverter(str3);
 
         String str4Suit = SuitChecker(str4);
-        OpponentsuitCounter(str4Suit);
+        OpponentsuitCounter(str4Suit, str4);
         four = NumConverter(str4);
 
         String str5Suit = SuitChecker(str5);
-        OpponentsuitCounter(str5Suit);
-        PlayersuitCounter(str5Suit);
+        OpponentsuitCounter(str5Suit, str5);
+        PlayersuitCounter(str5Suit, str5);
         five = NumConverter(str5);
 
         String str6Suit = SuitChecker(str6);
-        OpponentsuitCounter(str6Suit);
-        PlayersuitCounter(str6Suit);
+        OpponentsuitCounter(str6Suit, str6);
+        PlayersuitCounter(str6Suit, str6);
         six = NumConverter(str6);
 
         String str7Suit = SuitChecker(str7);
-        OpponentsuitCounter(str7Suit);
-        PlayersuitCounter(str7Suit);
+        OpponentsuitCounter(str7Suit, str7);
+        PlayersuitCounter(str7Suit, str7);
         seven = NumConverter(str7);
 
         String str8Suit = SuitChecker(str8);
-        OpponentsuitCounter(str8Suit);
-        PlayersuitCounter(str8Suit);
+        OpponentsuitCounter(str8Suit, str8);
+        PlayersuitCounter(str8Suit, str8);
         eight = NumConverter(str8);
 
         String str9Suit = SuitChecker(str9);
-        OpponentsuitCounter(str9Suit);
-        PlayersuitCounter(str9Suit);
+        OpponentsuitCounter(str9Suit, str9);
+        PlayersuitCounter(str9Suit, str9);
         nine = NumConverter(str9);
 
         /* Calls upon all the hand checker methods and determines whether or not the player and computer
@@ -1567,6 +1390,13 @@ public class Poker {
         respectively be deemed the winner. Otherwise, if they have the same hand, then program will evaluate
         kickers/high cards to determine the winner. If the player and computer have the same kickers/high cards
         as well, then they will chop the pot. */
+        
+        if(PlayerOnePair(str1, str2, str5, str6, str7, str8, str9)) {
+            PlayerOnePair = true;
+        }
+        if(OpponentOnePair(str3, str4, str5, str6, str7, str8, str9)) {
+            OpponentOnePair = true;
+        }
         
         if(PlayerTwoPair(str1, str2, str5, str6, str7, str8, str9)) {
             PlayerTwoPair = true;
@@ -1587,73 +1417,73 @@ public class Poker {
             OpponentTwoPair = false;
             OpponentOnePair = false;
         }
-
-        if(PlayerOnePair(str1, str2, str5, str6, str7, str8, str9)) {
-            if(!PlayerTwoPair && !PlayerThreeOfAKind) {
-                PlayerOnePair = true;
-            }
-        }
-        if(OpponentOnePair(str3, str4, str5, str6, str7, str8, str9)) {
-            if(!OpponentTwoPair && !OpponentThreeOfAKind) {
-                OpponentOnePair = true;
-            }
-        }
-
+        
+        //Player straight checker
         if(StraightChecker(one, two, five, six, seven, eight, nine)) {
             PlayerStraight = true;
             PlayerThreeOfAKind = false;
             PlayerTwoPair = false;
             PlayerOnePair = false;
-            if(StraightHigh > PlayerStraightHigh) {
-                PlayerStraightHigh = StraightHigh;
-            }
+            PlayerStraightHigh = StraightHigh;
         }
+        //Opponent straight checker
         if(StraightChecker(three, four, five, six, seven, eight, nine)) {
             OpponentStraight = true;
             OpponentThreeOfAKind = false;
             OpponentTwoPair = false;
             OpponentOnePair = false;
-            if(StraightHigh > OpponentStraightHigh) {
-                OpponentStraightHigh = StraightHigh;
-            }
+            OpponentStraightHigh = StraightHigh;
         }
-
+        Collections.sort(PlayerFlushHearts, Collections.reverseOrder());
+        Collections.sort(PlayerFlushDiamonds, Collections.reverseOrder());
+        Collections.sort(PlayerFlushSpades, Collections.reverseOrder());
+        Collections.sort(PlayerFlushClubs, Collections.reverseOrder());
         if(PlayerHearts >= 5 || PlayerDiamonds >= 5 || PlayerSpades >= 5 || PlayerClubs >= 5) {
             PlayerFlush = true;
-            PlayerStraight = false;
             PlayerThreeOfAKind = false;
             PlayerTwoPair = false;
             PlayerOnePair = false;
             if(PlayerHearts >= 5) {
-                PlayerFlushHigh = PlayerFlushHighHeart;
+                PlayerFlushHigh = PlayerFlushHearts.get(0);
+                isHeartFlush = true;
             }
             else if(PlayerDiamonds >= 5) {
-                PlayerFlushHigh = PlayerFlushHighDiamond;
+                PlayerFlushHigh = PlayerFlushDiamonds.get(0);
+                isDiamondFlush = true;
             }
             else if(PlayerSpades >= 5) {
-                PlayerFlushHigh = PlayerFlushHighSpade;
+                PlayerFlushHigh = PlayerFlushSpades.get(0);
+                isSpadeFlush = true;
             }
             else if(PlayerClubs >= 5) {
-                PlayerFlushHigh = PlayerFlushHighClub;
+                PlayerFlushHigh = PlayerFlushClubs.get(0);
+                isClubFlush = true;
             }
         }
+        Collections.sort(OpponentFlushHearts, Collections.reverseOrder());
+        Collections.sort(OpponentFlushDiamonds, Collections.reverseOrder());
+        Collections.sort(OpponentFlushSpades, Collections.reverseOrder());
+        Collections.sort(OpponentFlushClubs, Collections.reverseOrder());
         if(OpponentHearts >= 5 || OpponentDiamonds >= 5 || OpponentSpades >= 5 || OpponentClubs >= 5) {
             OpponentFlush = true;
-            OpponentStraight = false;
             OpponentThreeOfAKind = false;
             OpponentTwoPair = false;
             OpponentOnePair = false;
             if(OpponentHearts >= 5) {
-                OpponentFlushHigh = OpponentFlushHighHeart;
+                OpponentFlushHigh = OpponentFlushHearts.get(0);
+                isHeartFlush = true;
             }
             else if(OpponentDiamonds >= 5) {
-                OpponentFlushHigh = OpponentFlushHighDiamond;
+                OpponentFlushHigh = OpponentFlushDiamonds.get(0);
+                isDiamondFlush = true;
             }
             else if(OpponentSpades >= 5) {
-                OpponentFlushHigh = OpponentFlushHighSpade;
+                OpponentFlushHigh = OpponentFlushSpades.get(0);
+                isSpadeFlush = true;
             }
             else if(OpponentClubs >= 5) {
-                OpponentFlushHigh = OpponentFlushHighClub;
+                OpponentFlushHigh = OpponentFlushClubs.get(0);
+                isClubFlush = true;
             }
         }
 
@@ -1702,7 +1532,6 @@ public class Poker {
             PlayerThreeOfAKind = false;
             PlayerTwoPair = false;
             PlayerOnePair = false;
-            PlayerStraightFlushHigh = PlayerStraightHigh;
             if(PlayerStraightFlushHigh == 14) {
                 PlayerRoyalFlush = true;
                 PlayerStraightFlush = false;
@@ -1717,7 +1546,6 @@ public class Poker {
             OpponentThreeOfAKind = false;
             OpponentTwoPair = false;
             OpponentOnePair = false;
-            OpponentStraightFlushHigh = OpponentStraightHigh;
             if(OpponentStraightFlushHigh == 14) {
                 OpponentRoyalFlush = true;
                 OpponentStraightFlush = false;
@@ -1939,7 +1767,60 @@ public class Poker {
                     OpponentWin = true;
                 }
                 else {
-                    Chop = true;
+                    for (int i = 0; i < 5; i++) {
+                        if(isHeartFlush) {
+                            if(PlayerFlushHearts.get(i) > OpponentFlushHearts.get(i)) {
+                                PlayerWin = true;
+                                break;
+                            }
+                            else if(PlayerFlushHearts.get(i) < OpponentFlushHearts.get(i)) {
+                                OpponentWin = true;
+                                break;
+                            }
+                            else if(i == 4) {
+                                Chop = true;
+                            }
+                        }
+                        else if(isDiamondFlush) {
+                            if(PlayerFlushDiamonds.get(i) > OpponentFlushDiamonds.get(i)) {
+                                PlayerWin = true;
+                                break;
+                            }
+                            else if(PlayerFlushDiamonds.get(i) < OpponentFlushDiamonds.get(i)) {
+                                OpponentWin = true;
+                                break;
+                            }
+                            else if(i == 4) {
+                                Chop = true;
+                            }
+                        }
+                        else if(isSpadeFlush) {
+                            if(PlayerFlushSpades.get(i) > OpponentFlushSpades.get(i)) {
+                                PlayerWin = true;
+                                break;
+                            }
+                            else if(PlayerFlushSpades.get(i) < OpponentFlushSpades.get(i)) {
+                                OpponentWin = true;
+                                break;
+                            }
+                            else if(i == 4) {
+                                Chop = true;
+                            }
+                        }
+                        else if(isClubFlush) {
+                            if(PlayerFlushClubs.get(i) > OpponentFlushClubs.get(i)) {
+                                PlayerWin = true;
+                                break;
+                            }
+                            else if(PlayerFlushClubs.get(i) < OpponentFlushClubs.get(i)) {
+                                OpponentWin = true;
+                                break;
+                            }
+                            else if(i == 4) {
+                                Chop = true;
+                            }
+                        }
+                    }
                 }
             }
             else if(PlayerValue == 7) {
@@ -2711,17 +2592,20 @@ public class Poker {
         OpponentFullHouseHigh2 = 0;
         PlayerFlush = false;
         PlayerFlushHigh = 0;
-        PlayerFlushHighHeart = 0;
-        PlayerFlushHighDiamond = 0;
-        PlayerFlushHighSpade = 0;
-        PlayerFlushHighClub = 0;
+        PlayerFlushHearts = new ArrayList<>();
+        PlayerFlushDiamonds = new ArrayList<>();
+        PlayerFlushSpades = new ArrayList<>();
+        PlayerFlushClubs = new ArrayList<>();
         OpponentFlush = false;
         OpponentFlushHigh = 0;
-        OpponentFlushHighHeart = 0;
-        OpponentFlushHighDiamond = 0;
-        OpponentFlushHighSpade = 0;
-        OpponentFlushHighClub = 0;
-        FlushHigh = 0;
+        OpponentFlushHearts = new ArrayList<>();
+        OpponentFlushDiamonds = new ArrayList<>();
+        OpponentFlushSpades = new ArrayList<>();
+        OpponentFlushClubs = new ArrayList<>();
+        isHeartFlush = false;
+        isDiamondFlush = false;
+        isSpadeFlush = false;
+        isClubFlush = false;
         PlayerStraight = false;
         PlayerStraightHigh = 0;
         OpponentStraight = false;
@@ -2739,8 +2623,10 @@ public class Poker {
         OpponentTwoPairSecondHigh = 0;
         PlayerOnePair = false;
         PlayerOnePairHigh = 0;
+        PlayerOnePairSecondHigh = 0;
         OpponentOnePair = false;
         OpponentOnePairHigh = 0;
+        OpponentOnePairSecondHigh = 0;
         PlayerHighCard = false;
         PlayerHighCardValue = 0;
         OpponentHighCard = false;
