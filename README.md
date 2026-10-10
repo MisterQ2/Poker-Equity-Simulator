@@ -104,7 +104,7 @@ To verify the Monte Carlo simulator's correctness, I tested it against well-know
 | J-J vs A-K suited  |  53.87% vs. 46.13%  |        53.88% vs 46.12%        | ✅ Verified |
 | 2-2 vs A-K suited  |  49.92% vs. 50.08%  |        49.91% vs 50.09%        | ✅ Verified |
 
-These results match commercial poker software (CardPlayer, PokerNews) within statistical margin of error (±0.05% for 1,000,000 trials), confirming the hand evaluation algorithm correctly handles all poker hands including edge cases like wheel straights (A-2-3-4-5).
+These results match commercial poker software (CardPlayer, PokerNews) with a maximum observed error of 0.04% at 1,000,000 trials each, confirming the hand evaluation algorithm correctly handles all poker hands including edge cases like wheel straights (A-2-3-4-5).
 
 **Validation Process:**
 1. Manually configured hole cards in the Monte Carlo section
