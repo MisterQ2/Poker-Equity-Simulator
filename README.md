@@ -95,21 +95,36 @@ Opponent Equity: 18.76%
 
 ---
 ## Accuracy Validation
-To verify the Monte Carlo simulator's correctness, I tested it against well-known poker equity calculations:
+To verify the Monte Carlo simulator's correctness, I tested it against several heads-up poker scenarios:
 
-|      Scenario      |   Expected Result   | Simulator Result (1M trials) |    Status    |
-|--------------------|---------------------|--------------------------------|--------------|
-| A-A vs K-K         |  81.25% vs. 18.75%  |        81.24% vs 18.76%        | ✅ Verified |
-| J-J vs A-K offsuit |  57.26% vs. 42.74%  |        57.30% vs 42.70%        | ✅ Verified |
-| J-J vs A-K suited  |  53.87% vs. 46.13%  |        53.88% vs 46.12%        | ✅ Verified |
-| 2-2 vs A-K suited  |  49.92% vs. 50.08%  |        49.91% vs 50.09%        | ✅ Verified |
+**Note: First number/uppercase letter is the rank, and second lowercase letter is the suit.
 
-These results match commercial poker software (CardPlayer, PokerNews) with a maximum observed error of 0.04% at 1,000,000 trials each, confirming the hand evaluation algorithm correctly handles all poker hands including edge cases like wheel straights (A-2-3-4-5).
+Pre-flop Scenarios:
+
+|      Scenario      |   Expected Result   |  Simulator Result (1M trials)  |            Status             |
+|--------------------|---------------------|--------------------------------|-------------------------------|
+|   Ah-Ad vs Ks-Kc   |  81.25% vs. 18.75%  |        81.24% vs 18.76%        | Within ±0.1% --> ✅ Verified |
+|   Ah-Kd vs Js-Jc   |  42.74% vs. 57.26%  |        42.70% vs 57.30%        | Within ±0.1% --> ✅ Verified |
+|   Ah-Kh vs Js-Jc   |  46.13% vs. 53.87%  |        46.12% vs 53.88%        | Within ±0.1% --> ✅ Verified |
+|   Ah-Kh vs 2s-2c   |  50.08% vs. 49.92%  |        50.09% vs 49.91%        | Within ±0.1% --> ✅ Verified |
+|   8h-9h vs 3s-3c   |  53.14% vs. 46.86%  |        53.22% vs 46.78%        | Within ±0.1% --> ✅ Verified |
+
+Post-flop Scenarios:
+
+|                 Scenario                 |   Expected Result   |  Simulator Result (1M trials)  |            Status             |
+|------------------------------------------|---------------------|--------------------------------|-------------------------------|
+|    As-Ks vs Qh-Qc, Board: 9s, 5s, 2d     |  55.05% vs. 44.95%  |        55.10% vs 44.90%        | Within ±0.1% --> ✅ Verified |
+|    Jh-10h vs Ac-Ad, Board: 9h, 8c, 2h    |  56.26% vs. 43.74%  |        56.24% vs 43.76%        | Within ±0.1% --> ✅ Verified |
+|    Qc-Jc vs Kd-10d, Board: Kc, 9c, 4h    |  43.03% vs. 56.97%  |        43.08% vs 56.92%        | Within ±0.1% --> ✅ Verified |
+|  Ad-4d vs Ks-Kh, Board: 9d, 6d, 2c, 7s   |  27.27% vs. 72.73%  |        27.23% vs 72.77%        | Within ±0.1% --> ✅ Verified |
+| 10s-10d vs 9c-8c, Board: 7h, 6d, 2s, 3c  |  86.36% vs. 13.64%  |        86.41% vs 13.59%        | Within ±0.1% --> ✅ Verified |
+
+All ten results fell within their 95% confidence intervals (≈ ±0.1% at 1M trials; standard error ≈ 0.05%) of published equity calculators (CardPlayer, PokerNews), consistent with correct hand evaluation.
 
 **Validation Process:**
 1. Manually configured hole cards in the Monte Carlo section
 2. Ran 1,000,000 simulations for each scenario
-3. Compared results against established poker theory and commercial tools
+3. Compared results against established poker equity calculators
 4. All results accurate within expected variance
 
 ## What I Learned
