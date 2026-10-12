@@ -463,6 +463,9 @@ public class Poker {
         str1-str4. This removes the cards you manually fixed from the deck so that they cannot be drawn again.
         
         If you want a card to remain random, write "strX = deal();" in the for loop, as shown for str5-str9.
+
+        str1 and str2 are player 1's hole cards, str3 and str4 are player 2's hole cards, str5-7 is the flop,
+        str8 is the turn, and str9 is the river.
         
         */
         
