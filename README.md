@@ -106,7 +106,7 @@ Pre-flop Scenarios:
 |   Ah-Ad vs Ks-Kc   |  81.25% vs. 18.75%  |        81.24% vs 18.76%        | Within ±0.1% --> ✅ Verified |
 |   Ah-Kd vs Js-Jc   |  42.74% vs. 57.26%  |        42.70% vs 57.30%        | Within ±0.1% --> ✅ Verified |
 |   Ah-Kh vs Js-Jc   |  46.13% vs. 53.87%  |        46.12% vs 53.88%        | Within ±0.1% --> ✅ Verified |
-|   Ah-Kh vs 2s-2c   |  50.08% vs. 49.92%  |        50.09% vs 49.91%        | Within ±0.1% --> ✅ Verified |
+|   Ah-Kh vs 2s-2c   |  50.09% vs. 49.91%  |        50.09% vs 49.91%        | Within ±0.1% --> ✅ Verified |
 |   8h-9h vs 3s-3c   |  53.14% vs. 46.86%  |        53.22% vs 46.78%        | Within ±0.1% --> ✅ Verified |
 
 Post-flop Scenarios:
