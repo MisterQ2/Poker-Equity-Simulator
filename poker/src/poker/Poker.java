@@ -446,22 +446,24 @@ public class Poker {
     }
     //Monte Carlo Simulator
     else if(decision == 2) {
-        /*in this commented scenario, I want to test the equity of pocket Aces vs pocket Kings, so I'm manually
-        setting the hole cards for both the players while keeping the community cards random. Given 10,000
-        trials, the program will output somewhere from ~81-82% equity for the pocket Aces and ~18-19% equity
-        for the Kings (which is roughly equal to the actual equity of these hands). The more trials you do,
-        the more accurate your percentages will be, but the program will take longer to run (you'll really start
-        noticing long wait times once you get to 100k+ trials--100k trials takes ~2 seconds, and 1M trials takes
-        ~20 seconds to run).
-
-        To set up a situation, if you want to manually set a card, set it equal to a string with the format
-        as shown below for str1-str4. Put write number/letter abbreviation of the card (for 10, use the numerical
-        value "10" instead of the letter "T"), and then write the suit of the card all lowercase and plural. If
-        you want a card to remain random, set it equal to deal(), as shown for str1-str9 in the for loop.
+        /*
         
-        *NOTE* If you want to manually set a card, you must do so outside the for loop and then remove the card from
-        the deck manually via cards.remove(), as seen below for removing str1-str4 from the deck. This way, when you
-        go to randomly generate the other cards, they cannot be duplicates of the card you manually chose.
+        **PURPOSE AND HOW TO RUN**
+        
+        In this commented scenario, I want to test the equity of pocket Aces vs pocket Kings, so I'm manually
+        fixing the hole cards for both players while keeping the community cards random. Given 10,000
+        trials, the program will output somewhere from ~81-82% equity for the pocket Aces and ~18-19% equity
+        for the pocket Kings (roughly matches the true equities, with error due to low # of trials). The more trials you run,
+        the more accurate your percentages will be, however the program will take longer to run (100k trials take ~5 seconds,
+        and 1M trials take ~30-60 seconds to run).
+
+        To set up a poker scenario, to fix a card, set it equal to a string with the format shown below for str1-str4.
+        Write the number/letter abbreviation of the card, and then write the suit of the card all lowercase and plural
+        (e.g. "10 spades", "J diamonds", "2 clubs", "Q hearts"). Then, below, write "cards.remove(strX);", as shown for
+        str1-str4. This removes the cards you manually fixed from the deck so that they cannot be drawn again.
+        
+        If you want a card to remain random, write "strX = deal();" in the for loop, as shown for str5-str9.
+        
         */
         
         str1 = "A hearts";
