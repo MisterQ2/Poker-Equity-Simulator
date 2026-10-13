@@ -1,6 +1,6 @@
 # Texas Hold'em Poker Simulator
 
-A complete heads-up Texas Hold’em poker simulator written in Java, featuring an AI opponent and a Monte Carlo–based equity calculator for probabilistic decision-making.
+A complete heads-up Texas Hold’em poker simulator written in Java, featuring an AI opponent and a Monte Carlo–based equity calculator.
 
 ## Motivation
 
@@ -75,7 +75,9 @@ Your stack is now $10.
 Opponent's stack is now $190.
 
 ```
-**Note: Outputs have been reformatted for readability; actual console output uses plain text suit names.
+
+Note: Outputs have been reformatted for readability; actual console output uses plain text suit names.
+
 ---
 
 ### 2. Monte Carlo Simulator:
@@ -97,7 +99,7 @@ Opponent Equity: 18.76%
 ## Accuracy Validation
 To verify the Monte Carlo simulator's correctness, I tested it against several heads-up poker scenarios:
 
-**Note: First number/uppercase letter is the rank, and second lowercase letter is the suit.
+Note: First number/uppercase letter is the rank, and second lowercase letter is the suit.
 
 Pre-flop Scenarios:
 
@@ -119,7 +121,7 @@ Post-flop Scenarios:
 |  Ad-4d vs Ks-Kh, Board: 9d, 6d, 2c, 7s   |  27.27% vs. 72.73%  |        27.23% vs 72.77%        | Within ±0.1% --> ✅ Verified |
 | 10s-10d vs 9c-8c, Board: 7h, 6d, 2s, 3c  |  86.36% vs. 13.64%  |        86.41% vs 13.59%        | Within ±0.1% --> ✅ Verified |
 
-All ten results fell within their 95% confidence intervals (≈ ±0.1% at 1M trials; standard error ≈ 0.05%) of published equity calculators (CardPlayer, PokerNews), consistent with correct hand evaluation.
+All ten results fell within their 95% confidence intervals (≈ ±0.1% at 1M trials; standard error ≈ 0.05%) around the results of published equity calculators (CardPlayer, PokerNews), consistent with correct hand evaluation.
 
 **Validation Process:**
 1. Manually configured hole cards in the Monte Carlo section
@@ -140,6 +142,7 @@ All ten results fell within their 95% confidence intervals (≈ ±0.1% at 1M tri
 2. Compile: `javac poker/Poker.java`
 3. Run: `java poker.Poker`
 4. Choose option 1 for Heads-Up Poker Game, or option 2 for Monte Carlo Simulations
+5. Edit the card assignments in the Monte Carlo section of Poker.java (see the comments there), then recompile.
 
 ## Technical Implementation
 
@@ -150,8 +153,8 @@ All ten results fell within their 95% confidence intervals (≈ ±0.1% at 1M tri
 
 **AI Decision Making**:
 - Evaluates pre-flop hand strength based on card values, pairs, suited cards, and connectors
-- Adjusts betting behavior based on hand strength tiers
-- Implements variable bet sizing and bluffing frequency
+- Adjusts betting behavior based on pre-flop hand strength and player's actions
+- Randomized bet sizing and betting frequency
 
 **Monte Carlo Simulation**:
 - Runs N simulations with random community cards
@@ -161,13 +164,14 @@ All ten results fell within their 95% confidence intervals (≈ ±0.1% at 1M tri
 ## Future Improvements
 
 If I were to continue this project, I would:
-- Refactor to use object-oriented design (Card, Hand, Player classes) and more proper coding etiquette
-- Further optimize hand-classification aglorithms
+- Refactor to use object-oriented design (Card, Hand, Player classes) for modularization and easier debugging
+- Improve variable naming and reduce duplicated code (e.g. duplicated Player and Opponent methods)
+- Further optimize hand-classification algorithms
 - Add more sophisticated expected value (EV) calculations for AI decision-making
 
 ## Project Stats
 
-- **Lines of Code**: ~2,700
+- **Lines of Code**: 2,700
 - **Development Time**: 6 months
 - **Language**: Java
 
